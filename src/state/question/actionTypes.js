@@ -1,0 +1,2 @@
+export const SAVE_QUESTION_SUCCESS = 'question/ SAVE QUESTION SUCCESS';
+export const SAVE_QUESTION_FAIL = 'question/ SAVE QUESTION FAIL';
