@@ -4,7 +4,6 @@ const initialState = {
   email: null,
   id: null,
   name: null,
-  role: null,
   token: null
 };
 
@@ -16,7 +15,6 @@ const userLoginSuccess = (state, action) => {
         email: data.user.email,
         id: data.user.id,
         name: data.user.name,
-        role: data.user.role,
         token: data.token
     }
 }

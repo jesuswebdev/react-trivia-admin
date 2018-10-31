@@ -7,7 +7,11 @@ class Layout extends Component {
     return (
       <Aux>
         <Header />
-        <div className="container">{this.props.children}</div>
+        <section className="section">
+        	<div className="container">
+            {this.props.children}
+        	</div>
+        </section>
       </Aux>
     );
   }

@@ -8,7 +8,6 @@ export const getAuthState = () => {
       name: user.user.name,
       email: user.user.email,
       id: user.user.id,
-      role: user.user.role,
       token: user.token
     }
   };

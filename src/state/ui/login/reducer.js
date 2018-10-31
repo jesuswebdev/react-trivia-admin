@@ -18,16 +18,24 @@ const loginStart = (state, action) => {
 const loginStop = (state, action) => {
     return {
         ...state,
+        loading: false
+    }
+}
+
+const loginError = (state, action) => {
+    return {
+        ...state,
         loading: false,
-        error: action.payload ? true : false,
-        errorMessage: action.payload ? action.payload.message : ''
+        error: true,
+        errorMessage: action.payload.message
     }
 }
 
 const reducer = (state = initialState, action) => {
     switch(action.type) {
-        case loginActions.LOGIN_START: return loginStart(state, action)
-        case loginActions.LOGIN_STOP: return loginStop(state, action)
+        case loginActions.UI_LOGIN_START: return loginStart(state, action);
+        case loginActions.UI_LOGIN_STOP: return loginStop(state, action);
+        case loginActions.UI_LOGIN_ERROR: return loginError(state, action);
         default: return state;
     }
 }

@@ -19,14 +19,14 @@ const logout = () => {
 export const loginStart = (loginData) => dispatch => {
     dispatch(uiLoginActions.loginStart());
 
-    axios.post('http://localhost:8080/users/login', loginData)
+    axios.post('http://localhost:8080/users/admin/login', loginData)
     .then(({data}) => {
         localStorage.setItem('userData', JSON.stringify(data));
         dispatch(loginSuccess(data));
         dispatch(uiLoginActions.loginStop());
     })
-    .catch(({response: {data}}) => {
-        dispatch(uiLoginActions.loginStop(data));
+    .catch(({response: {data } = {}}) => {
+        dispatch(uiLoginActions.loginError(data));
     });
 }
 

@@ -2,11 +2,13 @@ import { combineReducers } from 'redux';
 import uiReducer from './ui/reducer';
 import userReducer from './user/reducer';
 import categoryReducer from './category/reducer';
+import questionReducer from './question/reducer';
 
 const reducers = combineReducers({
     ui: uiReducer,
     user: userReducer,
-    category: categoryReducer
+    category: categoryReducer,
+    question: questionReducer
 });
 
 export default reducers;
