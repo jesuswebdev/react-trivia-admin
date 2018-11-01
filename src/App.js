@@ -5,8 +5,10 @@ import Login from "./views/login/Login";
 import Dashboard from "./views/dashboard/Dashboard";
 import NewQuestion from "./views/questions/new-question/NewQuestion";
 import Questions from "./views/questions/Questions";
+import QuestionInfo from './views/questions/question-info/QuestionInfo';
 import Category from "./views/category/Category";
 import NewCategory from "./views/category/new-category/NewCategory";
+import Suggestions from "./views/suggestions/Suggestions";
 import Layout from "./layout/Layout";
 
 class App extends Component {
@@ -16,8 +18,10 @@ class App extends Component {
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/questions" exact component={Questions} />
         <Route path="/questions/new" component={NewQuestion} />
+        <Route path="/questions/:id" component={QuestionInfo} />
         <Route path="/category" exact component={Category} />
         <Route path="/category/new" component={NewCategory} />
+        <Route path="/suggestions" component={Suggestions} />
         <Redirect to="/dashboard" />
       </Switch>
     );

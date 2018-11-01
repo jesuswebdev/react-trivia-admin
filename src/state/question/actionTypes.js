@@ -11,3 +11,5 @@ export const NEXT_PAGE = 'question/ NEXT PAGE';
 
 export const SET_PAGE_NUMBER = 'question/ SET PAGE NUMBER';
 export const LOAD_STATS_SUCCESS = 'question/ LOAD STATS SUCCESS';
+
+export const LOAD_QUESTION_INFO_SUCCESS = 'question/ LOAD QUESTION INFO SUCCESS';

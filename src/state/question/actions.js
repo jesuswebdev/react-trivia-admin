@@ -1,24 +1,15 @@
 import * as questionActions from './actionTypes';
 import * as uiNewQuestionActions from '../ui/new-question/actions';
 import * as uiQuestionListActions from '../ui/question-list/actions';
-
+import * as uiQuestionInfoActions from '../ui/question-info/actions';
 import axios from 'axios';
 import { API_URL, PAGE_ITEM_COUNT } from '../../config';
+import { getAuthHeaders } from '../../utils';
 
-const getAuthHeaders = () => {
-    const {token} = JSON.parse(localStorage.getItem('userData'));
-    return {
-        'Authorization': 'Bearer ' + token
-    }
-}
+
 
 export const saveQuestionStart = (question) => dispatch => {
-
-    console.log(question);
-
-    dispatch(uiNewQuestionActions.questionSentStart());
-
-    
+    dispatch(uiNewQuestionActions.questionSentStart());   
     axios({
         method: 'post',
         url: 'http://localhost:8080/questions',
@@ -26,11 +17,9 @@ export const saveQuestionStart = (question) => dispatch => {
         data: question
     })
     .then(({data}) => {
-        console.log(data);
         dispatch(uiNewQuestionActions.questionSentFinish());
     })
     .catch(({response: {data}}) => {
-        console.log(data);
         dispatch(uiNewQuestionActions.questionSentFail(data));
     });
 }
@@ -73,7 +62,6 @@ const loadFirstPageSuccess = (data) => {
 }
 
 export const loadPage = (number) => dispatch => {
-
     dispatch(setPageNumber(number));
     dispatch(uiQuestionListActions.startLoadingNextQuestions());
     axios({
@@ -134,5 +122,32 @@ const loadStatsSuccess = (stats) => {
     return {
         type: questionActions.LOAD_STATS_SUCCESS,
         payload: stats
+    }
+}
+
+export const loadQuestionInfo = (questionId) => dispatch => {
+
+    dispatch(uiQuestionInfoActions.startLoadingQuestionInfo());
+
+    axios({
+        method: 'get',
+        url: `${API_URL}/questions/${questionId}`,
+        headers: getAuthHeaders()
+    })
+    .then(({data}) => {
+        console.log(data);
+        dispatch(loadQuestionInfoSuccess(data));
+        dispatch(uiQuestionInfoActions.finishLoadingQuestionInfo());
+    })
+    .catch(({response: {data} = {}}) => {
+        console.log(data);
+        dispatch(uiQuestionInfoActions.errorLoadingQuestionInfo(data));
+    });
+}
+
+const loadQuestionInfoSuccess = (data) => {
+    return {
+        type: questionActions.LOAD_QUESTION_INFO_SUCCESS,
+        payload: data
     }
 }

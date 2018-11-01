@@ -1,4 +1,3 @@
-//total pages, current page, content
 import React from 'react';
 
 const Paginator = (props) => {

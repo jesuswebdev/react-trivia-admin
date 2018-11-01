@@ -1,0 +1,1 @@
+export const LOAD_FIRST_PAGE_SUCCESS = 'suggestion/ LOAD FIRST PAGE SUCCESS';

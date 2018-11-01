@@ -7,7 +7,8 @@ const initialState = {
 	totalPages: 0,
 	loadedPages: [],
 	currentPageNumber: 0,
-	stats: null
+	stats: null,
+	questionInfo: null
 }
 
 const loadFirstPageSuccess = (state, action) => {
@@ -55,6 +56,13 @@ const loadStatsSuccess = (state, action) => {
 	}
 }
 
+const loadQuestionInfoSuccess = (state, action) => {
+	return {
+		...state,
+		questionInfo: action.payload
+	}
+}
+
 const reducer = (state = initialState, action) => {
     switch(action.type) {
         case questionActions.LOAD_FIRST_PAGE_SUCCESS: return loadFirstPageSuccess(state, action);
@@ -62,6 +70,7 @@ const reducer = (state = initialState, action) => {
         case questionActions.LOAD_PAGE_SUCCESS: return loadPageSuccess(state, action);
         case questionActions.NEXT_PAGE: return nextPage(state, action);
         case questionActions.LOAD_STATS_SUCCESS: return loadStatsSuccess(state, action);
+        case questionActions.LOAD_QUESTION_INFO_SUCCESS: return loadQuestionInfoSuccess(state, action);
         default: return state;
     }
 }

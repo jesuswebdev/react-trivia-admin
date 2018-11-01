@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Link, withRouter} from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 class SideMenu extends Component {
 	render() {
@@ -19,6 +19,7 @@ class SideMenu extends Component {
 				<ul className="menu-list">
 					<li><Link to="/questions" className={path === '/questions' ? 'is-active':null }>Administrar Preguntas</Link></li>
 					<li><Link to="/questions/new" className={path === '/questions/new' ? 'is-active':null }>Crear Pregunta</Link></li>
+					<li><Link to="/suggestions" className={path === '/suggestions' ? 'is-active':null }>Ver Sugerencias</Link></li>
 				</ul>
 				<p className="menu-label">Usuarios</p>
 				<ul className="menu-list">

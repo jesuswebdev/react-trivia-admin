@@ -12,7 +12,9 @@ class QuestionsList extends Component {
 		if (!this.props.loadedPages.includes(1)) {
 			this.props.loadFirstPage();
 		}
-		this.props.loadStats();
+		if (!this.props.questionsStats) {
+			this.props.loadStats();
+		}
 	}
 
 	nextPageHandler = (nextPageNumber) => {
@@ -25,6 +27,7 @@ class QuestionsList extends Component {
 	}
 
 	render() {
+		console.log(this.props)
 		return (
 			<Aux>
 				{
@@ -36,6 +39,12 @@ class QuestionsList extends Component {
 					<div className="level-item has-text-centered">
 						<Link to="/questions/new" className="button is-info">Crear Pregunta</Link>
 					</div>
+					{
+						(this.props.questionsStats || {}).questions_waiting_approval > 0 && (
+						<div className="level-item has-text-centered">
+							<Link to="/suggestions" className="button is-info">Ver sugerencias</Link>
+						</div>)
+					}
 				</div>
 				{
 					this.props.loadingFirstPage ?
@@ -46,56 +55,60 @@ class QuestionsList extends Component {
 						total={this.props.totalPages}
 						onClickNextPage={this.nextPageHandler} />
 						<div className="columns is-mobile is-tablet is-desktop is-multiline is-centered" style={{marginTop: '1px', minHeight: '85vh'}}>
-						{ this.props.loadingNextPage && <p className="has-text-centered" style={{marginTop: '25px', minHeight: '100vh'}}>Cargando preguntas...</p> }
-						{
-							this.props.currentPage && !this.props.loadingNextPage && this.props.currentPage.questions.map(question => {
-								let tagClass;
-								let questionDifficulty;
-								if (question.difficulty === 'easy') {
-									tagClass = 'is-success';
-									questionDifficulty = 'Fácil';
-								}
-								if (question.difficulty === 'medium') {
-									tagClass = 'is-warning';
-									questionDifficulty = 'Media';
-								}
-								if (question.difficulty === 'hard') {
-									tagClass = 'is-danger';
-									questionDifficulty = 'Difícil';
-								}
+							{ this.props.loadingNextPage && <p className="has-text-centered" style={{marginTop: '25px', minHeight: '100vh'}}>Cargando preguntas...</p> }
+							{
+								this.props.currentPage && !this.props.loadingNextPage && this.props.currentPage.questions.map(question => {
+									let tagClass;
+									let questionDifficulty;
+									if (question.difficulty === 'easy') {
+										tagClass = 'is-success';
+										questionDifficulty = 'Fácil';
+									}
+									if (question.difficulty === 'medium') {
+										tagClass = 'is-warning';
+										questionDifficulty = 'Media';
+									}
+									if (question.difficulty === 'hard') {
+										tagClass = 'is-danger';
+										questionDifficulty = 'Difícil';
+									}
 
-								return (
-									<div key={question._id} className="column is-10-mobile is-4-tablet is-3-desktop">
-										<div className="card">
-											<header className="card-header">
-												<div className="card-header-title">
-													<div className="tags">
-														<span className="tag is-info">{question.category.title}</span>
-														<span className={['tag', tagClass].join(' ')}>{questionDifficulty}</span>
+									return (
+										<div key={question._id} className="column is-10-mobile is-4-tablet is-3-desktop">
+											<div className="card">
+												<header className="card-header">
+													<div className="card-header-title">
+														<div className="tags">
+															<span className="tag is-info">{question.category.title}</span>
+															<span className={['tag', tagClass].join(' ')}>{questionDifficulty}</span>
+														</div>
+													</div>
+												</header>
+												<div className="card-content">
+													<div className="content">
+														<p>{question.title}</p>
+														<ul>
+															{question.options.map((option, index) => {
+																return <li key={index}>{option.text}</li>
+															})}
+														</ul>
 													</div>
 												</div>
-											</header>
-											<div className="card-content">
-												<div className="content">
-													<p>{question.title}</p>
-													<ul>
-														{question.options.map((option, index) => {
-															return <li key={index}>{option.text}</li>
-														})}
-													</ul>
-												</div>
+												<footer className="card-footer">
+													<Link className="card-footer-item" to={"/questions/" + question._id}>Ver</Link>
+													<Link className="card-footer-item" to={"/questions/" + question._id + "/edit"}>Editar</Link>
+													<a className="card-footer-item">Eliminar</a>
+												</footer>
 											</div>
-											<footer className="card-footer">
-												<Link className="card-footer-item" to={"/questions/" + question._id}>Ver</Link>
-												<Link className="card-footer-item" to={"/questions/" + question._id + "/edit"}>Editar</Link>
-												<a className="card-footer-item">Eliminar</a>
-											</footer>
 										</div>
-									</div>
-									);
-							})
-						}
+										);
+								})
+							}
 						</div>
+						<Paginator 
+						current={this.props.currentPageNumber}
+						total={this.props.totalPages}
+						onClickNextPage={this.nextPageHandler} />
 					</Aux>
 				}	
 			</Aux>

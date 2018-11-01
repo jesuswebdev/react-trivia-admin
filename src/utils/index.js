@@ -12,3 +12,10 @@ export const getAuthState = () => {
     }
   };
 };
+
+export const getAuthHeaders = () => {
+    const {token} = JSON.parse(localStorage.getItem('userData'));
+    return {
+        'Authorization': 'Bearer ' + token
+    }
+}
