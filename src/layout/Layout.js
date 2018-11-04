@@ -1,18 +1,15 @@
-import React, { Component } from "react";
-import Aux from "../components/aux/Aux";
-import Header from "./Header";
+import React, { Component, Fragment } from 'react';
+import Header from './Header';
 
 class Layout extends Component {
   render() {
     return (
-      <Aux>
+      <Fragment>
         <Header />
         <section className="section">
-        	<div className="container">
-            {this.props.children}
-        	</div>
+          <div className="container">{this.props.children}</div>
         </section>
-      </Aux>
+      </Fragment>
     );
   }
 }

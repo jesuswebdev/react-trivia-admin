@@ -8,6 +8,10 @@ import App from './App';
 import { getAuthState } from './utils';
 
 const store = createStore(rootReducer, getAuthState(), applyMiddleware(thunk));
-const Application = <Provider store={store}><App /></Provider>;
+const Application = (
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
 
 ReactDOM.render(Application, document.getElementById('root'));

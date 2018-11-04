@@ -1,33 +1,113 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import * as suggestionsActions from '../../state/suggestion/actions';
+import { fetchCategories } from '../../state/category/actions';
+import SuggestionsList from './suggestions-list/SuggestionsList';
+import SuggestionModal from './suggestion-modal/SuggestionModal';
 
 class Suggestions extends Component {
+  componentDidMount() {
+    if (!this.props.loadedPages.includes(1)) {
+      this.props.loadFirstPage();
+    }
+    this.props.loadCategories();
+  }
 
-	componentDidMount() {
-		if(!this.props.loadedPages.includes(1)){
-			this.props.loadFirstPage();
-		}
-	}
+  handleNextPage = page => {
+    if (!this.props.loadedPages.includes(page)) {
+      this.props.loadNextPage(page);
+    } else {
+      this.props.setPageNumber(page);
+    }
+  };
 
-	render() {
-		return (<p>suggestions</p>);
-	}
+  handleOpenModal = suggestionId => {
+    this.props.openModal(suggestionId);
+  };
+
+  handleCloseModal = () => {
+    this.props.closeModal();
+  };
+
+  handleModalButton = (id, state, page) => {
+    this.props.setSuggestionState(id, state, page);
+  };
+
+  render() {
+    if (this.props.loadingSuggestions) {
+      return <p className="has-text-centered">Cargando Sugerencias...</p>;
+    }
+    if (!this.props.totalPages && !this.props.loadingSuggestions) {
+      return <p className="has-text-centered">No hay sugerencias</p>;
+    }
+    return (
+      <Fragment>
+        <SuggestionsList
+          suggestions={(this.props.currentPage || {}).suggestions}
+          currentPage={this.props.currentPageNumber}
+          totalPages={this.props.totalPages}
+          onClickNextPage={this.handleNextPage}
+          loading={this.props.loadingNextSuggestions}
+          openModal={this.handleOpenModal}
+        />
+        {this.props.showModal && (
+          <SuggestionModal
+            active
+            suggestion={this.props.activeSuggestion}
+            closeModal={this.handleCloseModal}
+            categories={this.props.categories || []}
+            loadingCategories={this.props.loadingCategories}
+            handleButton={this.handleModalButton}
+            current={this.props.currentPageNumber}
+          />
+        )}
+      </Fragment>
+    );
+  }
 }
 
 const mapStateToProps = state => {
-	return {
-		currentPageNumber: state.suggestion.currentPageNumber,
-		loadedPages: state.suggestion.loadedPages,
-		totalPages: state.suggestion.totalPages,
-		currentPage: state.suggestion.pages.find(page => page.number === state.suggestion.currentPageNumber)
-	}
-}
+  return {
+    currentPageNumber: state.suggestion.currentPageNumber,
+    loadedPages: state.suggestion.loadedPages,
+    totalPages: state.suggestion.totalPages,
+    currentPage: state.suggestion.currentPage,
+    loadingSuggestions: state.ui.suggestionList.loading,
+    loadingNextSuggestions: state.ui.suggestionList.loadingNextSuggestions,
+    showModal: state.ui.suggestionModal.active,
+    activeSuggestion: state.suggestion.activeSuggestion,
+    categories: state.category.categories,
+    loadingCategories: state.ui.newQuestion.loadingCategories
+  };
+};
 
 const mapDispatchToProps = dispatch => {
-	return {
-		loadFirstPage: () => { dispatch(suggestionsActions.loadFirstPage()) }
-	}
-}
+  return {
+    loadFirstPage: () => {
+      dispatch(suggestionsActions.loadFirstPage());
+    },
+    loadNextPage: number => {
+      dispatch(suggestionsActions.loadNextPage(number));
+    },
+    setPageNumber: number => {
+      dispatch(suggestionsActions.setPageNumber(number));
+    },
+    openModal: suggestionId => {
+      dispatch(suggestionsActions.openModal(suggestionId));
+    },
+    closeModal: () => {
+      dispatch(suggestionsActions.closeModal());
+    },
+    loadCategories: () => {
+      dispatch(fetchCategories());
+    },
+    setSuggestionState: (id, state, page) => {
+      dispatch(suggestionsActions.changeSuggestionState(id, state, page));
+    }
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Suggestions);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Suggestions);
