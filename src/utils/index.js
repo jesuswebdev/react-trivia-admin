@@ -16,7 +16,11 @@ export const getAuthState = () => {
 };
 
 export const getAuthHeaders = () => {
-  const { token } = JSON.parse(localStorage.getItem('userData'));
+  let user = JSON.parse(localStorage.getItem('userData'));
+  const { token } = user || {};
+  if (!token) {
+    return undefined;
+  }
   return {
     Authorization: 'Bearer ' + token
   };
