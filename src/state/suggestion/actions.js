@@ -36,7 +36,6 @@ export const loadNextPage = page => dispatch => {
       headers: getAuthHeaders()
     })
     .then(({ data }) => {
-      console.log(data);
       dispatch(loadNextPageSuccess(data, page));
       dispatch(uiSuggestionListActions.finishLoadingNextSuggestions());
     })

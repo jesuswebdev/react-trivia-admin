@@ -34,7 +34,10 @@ const SuggestionListItem = ({ item }) => {
     <ListItem>
       <ListItem.Meta title={item.title} description={description} />
       {item.options.map(option => (
-        <Button type="default" style={{ margin: '0 3px' }}>
+        <Button
+          key={option.option_id}
+          type="default"
+          style={{ margin: '0 3px' }}>
           {' '}
           {option.text}{' '}
         </Button>

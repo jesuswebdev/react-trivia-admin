@@ -6,11 +6,6 @@ import SuggestionListItem from '../suggestion-list-item/SuggestionListItem';
 const SuggestionsList = props => {
   return (
     <Fragment>
-      <Paginator
-        current={props.currentPage}
-        total={props.totalPages}
-        onClickNextPage={props.onClickNextPage}
-      />
       <List
         loading={props.loading}
         itemLayout="vertical"
@@ -19,8 +14,9 @@ const SuggestionsList = props => {
       />
       <Paginator
         current={props.currentPage}
-        total={props.totalPages}
+        total={props.totalItems}
         onClickNextPage={props.onClickNextPage}
+        style={{ textAlign: 'center' }}
       />
     </Fragment>
   );

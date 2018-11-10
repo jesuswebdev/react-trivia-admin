@@ -49,6 +49,7 @@ class Suggestions extends Component {
               suggestions={(this.props.currentPage || {}).suggestions}
               currentPage={this.props.currentPageNumber}
               totalPages={this.props.totalPages}
+              totalItems={this.props.totalItems}
               onClickNextPage={this.handleNextPage}
               loading={this.props.loadingNextSuggestions}
               openModal={this.handleOpenModal}
@@ -76,6 +77,7 @@ const mapStateToProps = state => {
     currentPageNumber: state.suggestion.currentPageNumber,
     loadedPages: state.suggestion.loadedPages,
     totalPages: state.suggestion.totalPages,
+    totalItems: state.suggestion.totalItems,
     currentPage: state.suggestion.currentPage,
     loadingSuggestions: state.ui.suggestionList.loading,
     loadingNextSuggestions: state.ui.suggestionList.loadingNextSuggestions,
