@@ -1,45 +1,61 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import LoginForm from './login-form/LoginForm';
-import * as userActions from "../../state/user/actions";
+import { loginSuccess } from '../../state/user/actions';
+import { http } from '../../utils';
+import { Row, Col } from 'antd';
 
 class Login extends Component {
-
-  submitHandler = user => {
-    this.props.login(user);
+  state = {
+    error: false,
+    errorMessage: ''
   };
 
+  submitHandler = (user, setSubmitting) => {
+    this.setState({ error: false, errorMessage: '' });
+    setSubmitting(true);
+    http
+      .post('/users/login', user)
+      .then(({ data }) => {
+        this.props.loginSuccess(data);
+        setSubmitting(false);
+      })
+      .catch(({ response: { data } = {} }) => {
+        this.setState({ error: true, errorMessage: data.message });
+        setSubmitting(false);
+      });
+  };
 
   render() {
-
     if (this.props.isAuthenticated) {
-      return <Redirect to="/dashboard" />
+      return <Redirect to="/dashboard" />;
     }
 
     return (
-      <div className="columns is-mobile is-tablet is-desktop is-centered">
-        <div className="column is-10-mobile is-6-tablet is-6-desktop ">
-          <LoginForm loading={this.props.loading} error={this.props.error} errorMessage={this.props.errorMessage} submitHandler={this.submitHandler} />
-        </div>
-      </div>
+      <Row type="flex" justify="center">
+        <Col xs={22} sm={16} md={10} lg={10}>
+          <LoginForm
+            error={this.state.error}
+            errorMessage={this.state.errorMessage}
+            submitHandler={this.submitHandler}
+          />
+        </Col>
+      </Row>
     );
   }
 }
 
 const mapStateToProps = state => {
   return {
-    loading: state.ui.login.loading,
-    isAuthenticated: state.user.token !== null,
-    error: state.ui.login.error,
-    errorMessage: state.ui.login.errorMessage
+    isAuthenticated: state.user.token !== null
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: loginData => {
-      dispatch(userActions.loginStart(loginData));
+    loginSuccess: loginData => {
+      dispatch(loginSuccess(loginData));
     }
   };
 };
