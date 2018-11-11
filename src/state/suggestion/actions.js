@@ -14,12 +14,12 @@ export const loadFirstPage = () => dispatch => {
       dispatch(loadFirstPageSuccess(data));
       dispatch(uiSuggestionListActions.finishLoadingSuggestions());
     })
-    .catch(({ response: { data } }) => {
+    .catch(({ response: { data } = {} }) => {
       dispatch(uiSuggestionListActions.errorLoadingSuggestions(data));
     });
 };
 
-const loadFirstPageSuccess = data => {
+export const loadFirstPageSuccess = data => {
   return {
     type: actionTypes.LOAD_FIRST_PAGE_SUCCESS,
     payload: data

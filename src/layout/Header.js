@@ -1,31 +1,18 @@
-import React from "react";
-import {Link} from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Menu, Layout } from 'antd';
 
-const Header = props => (
-  <nav className="navbar is-dark" role="navigation" aria-label="main navigation">
-    <div className="navbar-brand">
-    <Link to="/" className="navbar-item">
-    React Trivia
-    </Link>
+const NavigationHeader = props => {
+  const { Header } = Layout;
 
-      <span
-        role="button"
-        className="navbar-burger burger"
-        aria-label="menu"
-        aria-expanded="false"
-        data-target="navbar-menuitems">
-        <span aria-hidden="true" />
-        <span aria-hidden="true" />
-        <span aria-hidden="true" />
-      </span>
-    </div>
+  return (
+    <Header>
+      <Link to="/" style={{ color: 'white' }}>
+        React Trivia Admin
+      </Link>
+      <Menu theme="dark" mode="horizontal" />
+    </Header>
+  );
+};
 
-    <div id="navbar-menuitems" className="navbar-menu">
-      <div className="navbar-end">
-      Admin
-      </div>
-    </div>
-  </nav>
-);
-
-export default Header;
+export default NavigationHeader;

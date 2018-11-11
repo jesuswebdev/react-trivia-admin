@@ -7,8 +7,11 @@ const Paginator = props => {
       defaultCurrent={1}
       current={props.current}
       total={props.total}
-      onChange={page => props.onClickNextPage(page)}
-      style={{ ...props.style }}
+      onChange={page => {
+        props.onClickNextPage(page);
+        window.scrollTo({ top: true, behavior: 'smooth' });
+      }}
+      style={{ textAlign: 'center' }}
     />
   );
 };

@@ -4,7 +4,7 @@ import * as suggestionsActions from '../../state/suggestion/actions';
 import { fetchCategories } from '../../state/category/actions';
 import SuggestionsList from './suggestions-list/SuggestionsList';
 import SuggestionModal from './suggestion-modal/SuggestionModal';
-import { Row, Col } from 'antd';
+import { Row, Col, Spin } from 'antd';
 
 class Suggestions extends Component {
   componentDidMount() {
@@ -36,7 +36,12 @@ class Suggestions extends Component {
 
   render() {
     if (this.props.loadingSuggestions) {
-      return <p style={{ textAlign: 'center' }}>Cargando Sugerencias...</p>;
+      return (
+        <Spin
+          style={{ display: 'block', justifyContent: 'center' }}
+          tip="Cargando Preguntas..."
+        />
+      );
     }
     if (!this.props.totalPages && !this.props.loadingSuggestions) {
       return <p style={{ textAlign: 'center' }}>No hay sugerencias</p>;
@@ -45,6 +50,7 @@ class Suggestions extends Component {
       <Fragment>
         <Row type="flex" justify="center">
           <Col span={22}>
+            <h1 style={{ fontSize: 'xx-large' }}>Preguntas Propuestas</h1>
             <SuggestionsList
               suggestions={(this.props.currentPage || {}).suggestions}
               currentPage={this.props.currentPageNumber}

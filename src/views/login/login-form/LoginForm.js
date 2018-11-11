@@ -55,7 +55,7 @@ const LoginForm = props => {
               help={touched.email && errors.email}>
               <Input
                 prefix={
-                  <Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
+                  <Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />
                 }
                 name="email"
                 onChange={handleChange}

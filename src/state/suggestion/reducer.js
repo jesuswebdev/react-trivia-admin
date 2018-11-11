@@ -46,8 +46,7 @@ const loadNextPageSuccess = (state, { payload }) => {
 const setPageNumber = (state, { payload }) => {
   return {
     ...state,
-    currentPageNumber: payload,
-    currentPage: state.pages.find(page => page.number === payload)
+    currentPageNumber: payload
   };
 };
 
