@@ -28,7 +28,11 @@ class QuestionsList extends Component {
       <Fragment>
         {this.props.loadingStats ? (
           <Spin
-            style={{ display: 'block', justifyContent: 'center' }}
+            style={{
+              display: 'block',
+              justifyContent: 'center',
+              marginTop: '80px'
+            }}
             tip="Cargando Estadisticas..."
           />
         ) : (

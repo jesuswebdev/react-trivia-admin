@@ -1,38 +1,33 @@
-import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Menu } from 'antd';
 
-class SideMenu extends Component {
-	render() {
-		const path = this.props.location.pathname;
-		return (
-			<aside className="menu">
-				<p className="menu-label">General</p>
-				<ul className="menu-list">
-					<li><Link to="/" className={path === '/dashboard' ? 'is-active':null }>Panel de Control</Link></li>
-				</ul>
-				<p className="menu-label">Categorías</p>
-				<ul className="menu-list">
-					<li><Link to="/category" className={path === '/category' ? 'is-active':null }>Administrar Categorías</Link></li>
-					<li><Link to="/category/new" className={path === '/category/new' ? 'is-active':null }>Crear Categoría</Link></li>
-				</ul>
-				<p className="menu-label">Preguntas</p>
-				<ul className="menu-list">
-					<li><Link to="/questions" className={path === '/questions' ? 'is-active':null }>Administrar Preguntas</Link></li>
-					<li><Link to="/questions/new" className={path === '/questions/new' ? 'is-active':null }>Crear Pregunta</Link></li>
-					<li><Link to="/suggestions" className={path === '/suggestions' ? 'is-active':null }>Ver Sugerencias</Link></li>
-				</ul>
-				<p className="menu-label">Usuarios</p>
-				<ul className="menu-list">
-					<li><a>Administrar Usuarios</a></li>
-					<li><a>Crear Usuario</a></li>
-				</ul>
-				<p className="menu-label">Juegos</p>
-				<ul className="menu-list">
-					<li><a>Panel de control de Juegos</a></li>
-				</ul>
-			</aside>
-		);
-	}
-}
+const SubMenu = Menu.SubMenu;
 
-export default withRouter(SideMenu);
+const SideMenu = props => {
+  return (
+    <Menu style={{ width: 256, height: window.innerHeight - 64 }} mode="inline">
+      <SubMenu key="sub1" title="Categorías">
+        <Menu.Item key="1">
+          <Link to="/category">Administrar Categorías</Link>
+        </Menu.Item>
+        <Menu.Item key="2">
+          <Link to="/category/new">Crear Categoría</Link>
+        </Menu.Item>
+      </SubMenu>
+      <SubMenu key="sub2" title="Preguntas">
+        <Menu.Item key="3">
+          <Link to="/questions">Administrar Preguntas</Link>
+        </Menu.Item>
+        <Menu.Item key="4">
+          <Link to="/questions/new">Crear Pregunta</Link>
+        </Menu.Item>
+        <Menu.Item key="5">
+          <Link to="/suggestions">Administrar Sugerencias</Link>
+        </Menu.Item>
+      </SubMenu>
+    </Menu>
+  );
+};
+
+export default SideMenu;

@@ -14,16 +14,16 @@ const loginFormSchema = Yup.object().shape({
 
 const LoginForm = props => {
   return (
-    <Card>
+    <Card style={{ marginTop: '80px' }}>
       <h1 style={{ textAlign: 'center', fontSize: 'x-large' }}>
         Iniciar Sesión
       </h1>
-      <hr />
       {props.error && (
         <Alert
           style={{ marginBottom: '10px' }}
           type="error"
           showIcon
+          closable
           description={props.errorMessage}
         />
       )}

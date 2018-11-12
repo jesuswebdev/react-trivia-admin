@@ -42,7 +42,7 @@ class QuestionListItem extends Component {
             key={option.option_id}
             icon={option.correct_answer ? 'check' : null}
             type="default"
-            style={{ margin: '0 3px' }}>
+            style={{ margin: '3px' }}>
             {' '}
             {option.text}{' '}
           </Button>

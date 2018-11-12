@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { Row, Col, Modal } from 'antd';
 import { http, getAuthHeaders } from '../../../utils';
 import NewCategoryForm from './new-category-form/NewCategoryForm';
+import { createCategory } from '../../../state/category/actions';
 
 class NewCategory extends Component {
   state = {
-    loading: false,
     error: false,
     showRedirect: false,
     showModal: false
@@ -14,24 +15,24 @@ class NewCategory extends Component {
 
   send = ({ name }, setSubmitting) => {
     setSubmitting(true);
-    this.setState({ loading: true, error: false }, async () => {
+    this.setState({ error: false }, async () => {
       try {
         const { data } = await http.post(
           '/category',
           { title: name },
           { headers: getAuthHeaders() }
         );
-        this.setState({ loading: false, showModal: true }, () => {
+        this.props.saveCategory(data);
+        setSubmitting(false);
+        this.setState({ showModal: true }, () => {
           Modal.success({
             title: 'Éxito',
             content: 'La categoría fue creada con éxito',
             onOk: this.handleClose
           });
-          setSubmitting(false);
         });
-        setSubmitting(false);
       } catch ({ response: { data } = {} }) {
-        this.setState({ loading: false, error: true }, () => {
+        this.setState({ error: true }, () => {
           setSubmitting(false);
         });
       }
@@ -43,22 +44,29 @@ class NewCategory extends Component {
   };
 
   render() {
-    const { loading, error } = this.state;
-    return this.state.showRedirect ? (
+    const { error, showModal, showRedirect } = this.state;
+    return showRedirect ? (
       <Redirect to="/category" />
     ) : (
       <Row type="flex" justify="center">
         <Col xs={22} sm={16} md={10} lg={10}>
-          <NewCategoryForm
-            loading={loading}
-            error={error}
-            onSubmit={this.send}
-          />
-          {this.state.showModal && <Modal />}
+          <NewCategoryForm error={error} onSubmit={this.send} />
+          {showModal && <Modal />}
         </Col>
       </Row>
     );
   }
 }
 
-export default NewCategory;
+const mapDispatchToProps = dispatch => {
+  return {
+    saveCategory: data => {
+      dispatch(createCategory(data));
+    }
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(NewCategory);

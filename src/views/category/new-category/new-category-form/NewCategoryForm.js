@@ -26,7 +26,7 @@ const NewCategoryForm = props => {
         handleBlur,
         handleChange
       }) => (
-        <Card>
+        <Card style={{ marginTop: '80px' }}>
           <h1 style={{ fontSize: 'xx-large', textAlign: 'center' }}>
             Nueva Categoría
           </h1>
