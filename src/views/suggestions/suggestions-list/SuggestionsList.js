@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { List } from 'antd';
+import { Table, Tag, Button, Icon } from 'antd';
 import Paginator from '../../../components/paginator/Paginator';
 import { QuestionListItem } from '../../../components';
 
@@ -17,23 +17,75 @@ class SuggestionsList extends Component {
 
     return false;
   }
+
   render() {
     const { props } = this;
+
+    const difficulty = {
+      easy: { text: 'Fácil', color: 'green' },
+      medium: { text: 'Media', color: 'gold' },
+      hard: { text: 'Difícil', color: 'red' }
+    };
+
+    const columns = [
+      { title: 'Pregunta', dataIndex: 'title' },
+      {
+        title: 'Categoría',
+        dataIndex: 'category.title',
+        align: 'center',
+        render: text => <Tag color="#108ee9">{text}</Tag>
+      },
+      {
+        title: 'Dificultad',
+        dataIndex: 'difficulty',
+        render: text => (
+          <Tag color={difficulty[text].color}>{difficulty[text].text}</Tag>
+        )
+      },
+      {
+        title: 'Acciones',
+        key: 'actions',
+        render: (_, item) => (
+          <Fragment>
+            <Button shape="circle" icon="info" style={{ margin: '0px 4px' }} />
+            <Button
+              shape="circle"
+              icon="check"
+              style={{ margin: '0px 4px' }}
+              onClick={() =>
+                props.setSuggestionState(item._id, 'approve', props.currentPage)
+              }
+            />
+            <Button
+              shape="circle"
+              icon="delete"
+              style={{ margin: '0px 4px' }}
+              onClick={() =>
+                props.setSuggestionState(item._id, 'reject', props.currentPage)
+              }
+            />
+          </Fragment>
+        )
+      }
+    ];
+
+    const pagination = (
+      <Paginator
+        current={props.currentPage}
+        total={props.totalItems}
+        onClickNextPage={props.onClickNextPage}
+        style={{ textAlign: 'center' }}
+      />
+    );
+
     return (
-      <Fragment>
-        <List
-          loading={props.loading}
-          itemLayout="vertical"
-          dataSource={props.suggestions}
-          renderItem={item => <QuestionListItem key={item._id} item={item} />}
-        />
-        <Paginator
-          current={props.currentPage}
-          total={props.totalItems}
-          onClickNextPage={props.onClickNextPage}
-          style={{ textAlign: 'center' }}
-        />
-      </Fragment>
+      <Table
+        dataSource={props.suggestions}
+        columns={columns}
+        rowKey={item => item._id}
+        loading={props.loading}
+        pagination={pagination}
+      />
     );
   }
 }

@@ -30,7 +30,7 @@ class Suggestions extends Component {
     this.props.closeModal();
   };
 
-  handleModalButton = (id, state, page) => {
+  handleSuggestionState = (id, state, page) => {
     this.props.setSuggestionState(id, state, page);
   };
 
@@ -56,13 +56,14 @@ class Suggestions extends Component {
           <Col span={22}>
             <h1 style={{ fontSize: 'xx-large' }}>Preguntas Propuestas</h1>
             <SuggestionsList
-              suggestions={(this.props.currentPage || {}).suggestions}
+              suggestions={(this.props.currentPage || {}).suggestions || []}
               currentPage={this.props.currentPageNumber}
               totalPages={this.props.totalPages}
               totalItems={this.props.totalItems}
               onClickNextPage={this.handleNextPage}
               loading={this.props.loadingNextSuggestions}
               openModal={this.handleOpenModal}
+              setSuggestionState={this.handleSuggestionState}
             />
             {this.props.showModal && (
               <SuggestionModal

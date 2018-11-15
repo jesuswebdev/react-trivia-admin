@@ -96,7 +96,9 @@ export const changeSuggestionState = (id, state, page) => dispatch => {
       dispatch(closeModal());
       dispatch(uiSuggestionListActions.startLoadingNextSuggestions());
       http
-        .get('/questions/suggestions/count')
+        .get('/questions/suggestions/count', {
+          headers: getAuthHeaders()
+        })
         .then(({ data: { count } }) => {
           const totalPages = Math.ceil(count / PAGE_ITEM_COUNT);
           const pageNumber = page > totalPages ? page - 1 : page;
