@@ -66,7 +66,7 @@
     "yup": "^0.26.6"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start": "node server",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
   },
@@ -82,7 +82,8 @@
   "devDependencies": {
     "babel-plugin-import": "^1.11.0",
     "enzyme": "^3.7.0",
-    "enzyme-adapter-react-16": "^1.6.0"
+    "enzyme-adapter-react-16": "^1.6.0",
+    "prop-types": "^15.6.2"
   },
   "husky": {
     "hooks": {

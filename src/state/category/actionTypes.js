@@ -2,3 +2,4 @@ export const FETCH_CATEGORIES_SUCCESS = 'category/ FETCH CATEGORIES SUCCESS';
 export const FETCH_CATEGORIES_FAIL = 'category/ FETCH CATEGORIES FAIL';
 
 export const CREATE_CATEGORY = 'category/ CREATE CATEGORY';
+export const DELETE_CATEGORY = 'category/ DELETE CATEGORY';

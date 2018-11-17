@@ -1,5 +1,12 @@
 'use strict';
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
+if (process.env.NODE_ENV === 'development') {
+  require('./scripts/start');
+  return;
+}
+
 const express = require('express');
 const path = require('path');
 const app = express();

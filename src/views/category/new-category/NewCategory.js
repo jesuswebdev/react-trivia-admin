@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Row, Col, Modal } from 'antd';
+import { Row, Col, Modal, Card } from 'antd';
 import { http, getAuthHeaders } from '../../../utils';
-import NewCategoryForm from './new-category-form/NewCategoryForm';
+import CategoryForm from '../category-form/CategoryForm';
 import { createCategory } from '../../../state/category/actions';
 
 class NewCategory extends Component {
   state = {
     error: false,
-    showRedirect: false,
-    showModal: false
+    showRedirect: false
   };
+
+  successModal = () =>
+    Modal.success({
+      title: 'Éxito',
+      content: 'La categoría fue creada con éxito',
+      onOk: this.handleClose
+    });
 
   send = ({ name }, setSubmitting) => {
     setSubmitting(true);
@@ -24,13 +30,7 @@ class NewCategory extends Component {
         );
         this.props.saveCategory(data);
         setSubmitting(false);
-        this.setState({ showModal: true }, () => {
-          Modal.success({
-            title: 'Éxito',
-            content: 'La categoría fue creada con éxito',
-            onOk: this.handleClose
-          });
-        });
+        this.successModal();
       } catch ({ response: { data } = {} }) {
         this.setState({ error: true }, () => {
           setSubmitting(false);
@@ -44,14 +44,21 @@ class NewCategory extends Component {
   };
 
   render() {
-    const { error, showModal, showRedirect } = this.state;
+    const { error, showRedirect } = this.state;
+    const errorMessage = 'Ocurrió un error al intentar crear la categoría';
     return showRedirect ? (
       <Redirect to="/category" />
     ) : (
       <Row type="flex" justify="center">
-        <Col xs={22} sm={16} md={10} lg={10}>
-          <NewCategoryForm error={error} onSubmit={this.send} />
-          {showModal && <Modal />}
+        <Col xs={22} sm={16} md={10} lg={8}>
+          <Card style={{ marginTop: '80px' }}>
+            <CategoryForm
+              title="Nueva Categoría"
+              error={error}
+              onSubmit={this.send}
+              errorMessage={errorMessage}
+            />
+          </Card>
         </Col>
       </Row>
     );

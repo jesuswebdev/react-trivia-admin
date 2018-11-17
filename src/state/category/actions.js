@@ -33,3 +33,10 @@ export const createCategory = category => {
     payload: category
   };
 };
+
+export const deleteCategory = id => {
+  return {
+    type: categoryActions.DELETE_CATEGORY,
+    id
+  };
+};
