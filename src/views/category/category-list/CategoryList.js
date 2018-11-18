@@ -1,29 +1,8 @@
 import React, { Fragment } from 'react';
-import { Spin, Row, Col, Table, Button, Modal } from 'antd';
+import { Spin, Row, Col, Table } from 'antd';
 import DeleteCategoryButton from '../delete-category-button/DeleteCategoryButton';
-
-const showInfoModal = item => {
-  const content = (
-    <Fragment>
-      <p style={{ margin: '0px' }}>{`Preguntas totales: ${
-        item.question_count
-      }`}</p>
-      <p style={{ margin: '0px' }}>{`Preguntas fáciles: ${
-        item.total_easy_questions
-      }`}</p>
-      <p style={{ margin: '0px' }}>{`Preguntas medias: ${
-        item.total_medium_questions
-      }`}</p>
-      <p style={{ margin: '0px' }}>{`Preguntas difíciles: ${
-        item.total_hard_questions
-      }`}</p>
-    </Fragment>
-  );
-  Modal.info({
-    title: item.title,
-    content: content
-  });
-};
+import EditCategoryButton from '../edit-category-button/EditCategoryButton';
+import CategoryInfoButton from '../category-info-button/CategoryInfoButton';
 
 class CategoryList extends React.Component {
   render() {
@@ -44,12 +23,8 @@ class CategoryList extends React.Component {
         align: 'center',
         render: (_, item) => (
           <Fragment>
-            <Button icon="info-circle" onClick={() => showInfoModal(item)}>
-              Ver Info
-            </Button>
-            <Button icon="edit" style={{ margin: '0 5px' }}>
-              Modificar
-            </Button>
+            <CategoryInfoButton category={item} />
+            <EditCategoryButton category={item} />
             {item.question_count === 0 && (
               <DeleteCategoryButton category={item} />
             )}
