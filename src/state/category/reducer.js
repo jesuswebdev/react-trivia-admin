@@ -28,6 +28,24 @@ const deleteCategory = (state, action) => {
   };
 };
 
+const editCategorySuccess = (state, action) => {
+  let [edited] = state.categories.filter(
+    category => category._id === action.payload.categoryId
+  );
+  edited.title = action.payload.name;
+
+  return {
+    ...state,
+    categories: state.categories.map(category => {
+      if (category._id !== action.payload.categoryId) {
+        return category;
+      } else {
+        return edited;
+      }
+    })
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case categoryActions.FETCH_CATEGORIES_SUCCESS:
@@ -36,6 +54,8 @@ const reducer = (state = initialState, action) => {
       return createCategory(state, action);
     case categoryActions.DELETE_CATEGORY:
       return deleteCategory(state, action);
+    case categoryActions.EDIT_CATEGORY_SUCCESS:
+      return editCategorySuccess(state, action);
     default:
       return state;
   }

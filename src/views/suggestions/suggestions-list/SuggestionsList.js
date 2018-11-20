@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import { Table, Tag, Button, Icon } from 'antd';
+import { Table, Tag, Button } from 'antd';
 import Paginator from '../../../components/paginator/Paginator';
-import { QuestionListItem } from '../../../components';
 
 class SuggestionsList extends Component {
   shouldComponentUpdate(nextProps) {

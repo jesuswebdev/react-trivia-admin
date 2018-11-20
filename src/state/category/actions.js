@@ -40,3 +40,13 @@ export const deleteCategory = id => {
     id
   };
 };
+
+export const editCategorySuccess = (categoryId, name) => {
+  return {
+    type: categoryActions.EDIT_CATEGORY_SUCCESS,
+    payload: {
+      categoryId,
+      name
+    }
+  };
+};
