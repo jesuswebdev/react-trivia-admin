@@ -1,82 +1,92 @@
-import React, { Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
+import { Table, Tag, Button } from 'antd';
 import Paginator from '../../../components/paginator/Paginator';
 
-const SuggestionsList = props => {
-  return (
-    <Fragment>
+class SuggestionsList extends Component {
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.currentPage !== this.props.currentPage) {
+      return true;
+    }
+    if (nextProps.suggestions !== this.props.suggestions) {
+      return true;
+    }
+    if (nextProps.loading !== this.props.loading) {
+      return true;
+    }
+
+    return false;
+  }
+
+  render() {
+    const { props } = this;
+
+    const difficulty = {
+      easy: { text: 'Fácil', color: 'green' },
+      medium: { text: 'Media', color: 'gold' },
+      hard: { text: 'Difícil', color: 'red' }
+    };
+
+    const columns = [
+      { title: 'Pregunta', dataIndex: 'title' },
+      {
+        title: 'Categoría',
+        dataIndex: 'category.title',
+        align: 'center',
+        render: text => <Tag color="#108ee9">{text}</Tag>
+      },
+      {
+        title: 'Dificultad',
+        dataIndex: 'difficulty',
+        render: text => (
+          <Tag color={difficulty[text].color}>{difficulty[text].text}</Tag>
+        )
+      },
+      {
+        title: 'Acciones',
+        key: 'actions',
+        render: (_, item) => (
+          <Fragment>
+            <Button shape="circle" icon="info" style={{ margin: '0px 4px' }} />
+            <Button
+              shape="circle"
+              icon="check"
+              style={{ margin: '0px 4px' }}
+              onClick={() =>
+                props.setSuggestionState(item._id, 'approve', props.currentPage)
+              }
+            />
+            <Button
+              shape="circle"
+              icon="delete"
+              style={{ margin: '0px 4px' }}
+              onClick={() =>
+                props.setSuggestionState(item._id, 'reject', props.currentPage)
+              }
+            />
+          </Fragment>
+        )
+      }
+    ];
+
+    const pagination = (
       <Paginator
         current={props.currentPage}
-        total={props.totalPages}
+        total={props.totalItems}
         onClickNextPage={props.onClickNextPage}
+        style={{ textAlign: 'center' }}
       />
-      {props.loading ? (
-        <p>Cargando sugerencias...</p>
-      ) : (
-        <div
-          style={{ marginTop: '1px' }}
-          className="columns is-mobile is-tablet is-desktop is-multiline is-centered">
-          {props.suggestions.map(suggestion => {
-            let tagClass;
-            let suggestionDifficulty;
-            if (suggestion.difficulty === 'easy') {
-              tagClass = 'is-success';
-              suggestionDifficulty = 'Fácil';
-            }
-            if (suggestion.difficulty === 'medium') {
-              tagClass = 'is-warning';
-              suggestionDifficulty = 'Media';
-            }
-            if (suggestion.difficulty === 'hard') {
-              tagClass = 'is-danger';
-              suggestionDifficulty = 'Difícil';
-            }
-            return (
-              <div
-                key={suggestion._id}
-                className="column is-10-mobile is-4-tablet is-3-desktop">
-                <div className="card">
-                  <header className="card-header">
-                    <div className="card-header-title">
-                      <div className="tags">
-                        <span className="tag is-info">
-                          {suggestion.category.title}
-                        </span>
-                        <span className={['tag', tagClass].join(' ')}>
-                          {suggestionDifficulty}
-                        </span>
-                      </div>
-                    </div>
-                  </header>
-                  <div className="card-content">
-                    <div className="content">
-                      <p>{suggestion.title}</p>
-                      <ul>
-                        {suggestion.options.map((option, index) => {
-                          return <li key={index}>{option.text}</li>;
-                        })}
-                      </ul>
-                    </div>
-                  </div>
-                  <footer className="card-footer">
-                    <a
-                      className="card-footer-item"
-                      onClick={() => props.openModal(suggestion._id)}>
-                      Ver
-                    </a>
-                  </footer>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-      <Paginator
-        current={props.currentPage}
-        total={props.totalPages}
-        onClickNextPage={props.onClickNextPage}
+    );
+
+    return (
+      <Table
+        dataSource={props.suggestions}
+        columns={columns}
+        rowKey={item => item._id}
+        loading={props.loading}
+        pagination={pagination}
       />
-    </Fragment>
-  );
-};
+    );
+  }
+}
 
 export default SuggestionsList;

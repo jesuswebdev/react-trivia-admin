@@ -4,6 +4,7 @@ import * as suggestionsActions from '../../state/suggestion/actions';
 import { fetchCategories } from '../../state/category/actions';
 import SuggestionsList from './suggestions-list/SuggestionsList';
 import SuggestionModal from './suggestion-modal/SuggestionModal';
+import { Row, Col, Spin } from 'antd';
 
 class Suggestions extends Component {
   componentDidMount() {
@@ -29,38 +30,54 @@ class Suggestions extends Component {
     this.props.closeModal();
   };
 
-  handleModalButton = (id, state, page) => {
+  handleSuggestionState = (id, state, page) => {
     this.props.setSuggestionState(id, state, page);
   };
 
   render() {
     if (this.props.loadingSuggestions) {
-      return <p className="has-text-centered">Cargando Sugerencias...</p>;
+      return (
+        <Spin
+          style={{
+            display: 'block',
+            justifyContent: 'center',
+            marginTop: '80px'
+          }}
+          tip="Cargando Preguntas..."
+        />
+      );
     }
     if (!this.props.totalPages && !this.props.loadingSuggestions) {
-      return <p className="has-text-centered">No hay sugerencias</p>;
+      return <p style={{ textAlign: 'center' }}>No hay sugerencias</p>;
     }
     return (
       <Fragment>
-        <SuggestionsList
-          suggestions={(this.props.currentPage || {}).suggestions}
-          currentPage={this.props.currentPageNumber}
-          totalPages={this.props.totalPages}
-          onClickNextPage={this.handleNextPage}
-          loading={this.props.loadingNextSuggestions}
-          openModal={this.handleOpenModal}
-        />
-        {this.props.showModal && (
-          <SuggestionModal
-            active
-            suggestion={this.props.activeSuggestion}
-            closeModal={this.handleCloseModal}
-            categories={this.props.categories || []}
-            loadingCategories={this.props.loadingCategories}
-            handleButton={this.handleModalButton}
-            current={this.props.currentPageNumber}
-          />
-        )}
+        <Row type="flex" justify="center">
+          <Col span={22}>
+            <h1 style={{ fontSize: 'xx-large' }}>Preguntas Propuestas</h1>
+            <SuggestionsList
+              suggestions={(this.props.currentPage || {}).suggestions || []}
+              currentPage={this.props.currentPageNumber}
+              totalPages={this.props.totalPages}
+              totalItems={this.props.totalItems}
+              onClickNextPage={this.handleNextPage}
+              loading={this.props.loadingNextSuggestions}
+              openModal={this.handleOpenModal}
+              setSuggestionState={this.handleSuggestionState}
+            />
+            {this.props.showModal && (
+              <SuggestionModal
+                active
+                suggestion={this.props.activeSuggestion}
+                closeModal={this.handleCloseModal}
+                categories={this.props.categories || []}
+                loadingCategories={this.props.loadingCategories}
+                handleButton={this.handleModalButton}
+                current={this.props.currentPageNumber}
+              />
+            )}
+          </Col>
+        </Row>
       </Fragment>
     );
   }
@@ -71,6 +88,7 @@ const mapStateToProps = state => {
     currentPageNumber: state.suggestion.currentPageNumber,
     loadedPages: state.suggestion.loadedPages,
     totalPages: state.suggestion.totalPages,
+    totalItems: state.suggestion.totalItems,
     currentPage: state.suggestion.currentPage,
     loadingSuggestions: state.ui.suggestionList.loading,
     loadingNextSuggestions: state.ui.suggestionList.loadingNextSuggestions,

@@ -26,7 +26,8 @@ export const getAuthHeaders = () => {
   };
 };
 
-export const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
-  headers: getAuthHeaders()
+const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL
 });
+
+export { axiosInstance as http };

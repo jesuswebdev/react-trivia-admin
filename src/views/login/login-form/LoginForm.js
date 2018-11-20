@@ -1,57 +1,104 @@
 import React from 'react';
-import { Formik, Form, Field } from 'formik';
+import { Button, Card, Form, Icon, Input, Alert } from 'antd';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 const loginFormSchema = Yup.object().shape({
-	email: Yup.string()
-	.email('Debe introducir una dirección de correo electrónico válida')
-	.required('El correo electrónico es obligatorio'),
-	password: Yup.string()
-	.min(6, 'La contraseña es muy corta')
-	.required('La contraseña es obligatoria')
+  email: Yup.string()
+    .email('Debe introducir una dirección de correo electrónico válida')
+    .required('El correo electrónico es obligatorio'),
+  password: Yup.string()
+    .min(6, 'La contraseña es muy corta')
+    .required('La contraseña es obligatoria')
 });
 
-const LoginForm = (props) => {
-	return (<div className="box" style={{marginTop: '30px'}}>
-			<h1 className="subtitle is-4 has-text-centered">Iniciar Sesión</h1>
-			<hr />
-			{props.error && <div className="notification is-danger has-text-centered">{props.errorMessage}</div>}
-			<Formik
-			initialValues={{email: '', password: ''}}
-			validationSchema={loginFormSchema}
-			onSubmit={values => props.submitHandler(values)}>
-			{
-				({values, errors, touched}) => (
-					<Form>
-						<div className="field">
-							<label className="label">Correo Electrónico</label>
-							<div className="control">
-								<Field 
-								name="email" 
-								className={["input", touched.email && errors.email ? "is-danger": null, touched.email && !errors.email ? "is-success": null].join(' ')} 
-								type="email"
-								value={values.email}
-								placeholder="Correo electrónico" />
-							</div>
-							{ touched.email && errors.email && <p className="help is-danger">{errors.email}</p> }
-						</div>
-						<div className="field">
-							<label className="label">Contraseña</label>
-							<div className="control">
-								<Field 
-								name="password" 
-								className={["input", touched.password && errors.password ? "is-danger": null, touched.password && !errors.password ? "is-success": null].join(' ')} 
-								type="password"
-								value={values.password}
-								placeholder="Contraseña" />
-							</div>
-							{ touched.password && errors.password && <p className="help is-danger">{errors.password}</p> }
-						</div>
-						<button type="submit" className={["button", "is-info", "is-fullwidth", props.loading ? "is-loading": null].join(' ')} disabled={props.loading}>Enviar</button>
-					</Form>)
-			}
-			</Formik>
-		</div>);
-}
+const LoginForm = props => {
+  return (
+    <Card style={{ marginTop: '80px' }}>
+      <h1 style={{ textAlign: 'center', fontSize: 'x-large' }}>
+        Iniciar Sesión
+      </h1>
+      {props.error && (
+        <Alert
+          style={{ marginBottom: '10px' }}
+          type="error"
+          showIcon
+          closable
+          description={props.errorMessage}
+        />
+      )}
+      <Formik
+        initialValues={{ email: '', password: '' }}
+        validationSchema={loginFormSchema}
+        onSubmit={(values, { setSubmitting }) =>
+          props.submitHandler(values, setSubmitting)
+        }>
+        {({
+          values,
+          errors,
+          touched,
+          isSubmitting,
+          handleBlur,
+          handleChange,
+          handleSubmit
+        }) => (
+          <Form onSubmit={handleSubmit}>
+            <Form.Item
+              hasFeedback
+              validateStatus={
+                touched.email && errors.email
+                  ? 'error'
+                  : touched.email && !errors.email
+                    ? 'success'
+                    : null
+              }
+              help={touched.email && errors.email}>
+              <Input
+                prefix={
+                  <Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />
+                }
+                name="email"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                type="email"
+                placeholder="Correo Electrónico"
+                value={values.email}
+              />
+            </Form.Item>
+            <Form.Item
+              hasFeedback
+              validateStatus={
+                touched.password && errors.password
+                  ? 'error'
+                  : touched.password && !errors.password
+                    ? 'success'
+                    : null
+              }
+              help={touched.password && errors.password}>
+              <Input
+                prefix={
+                  <Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />
+                }
+                name="password"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                type="password"
+                placeholder="Contraseña"
+                value={values.password}
+              />
+            </Form.Item>
+            <Button
+              block
+              type="primary"
+              htmlType="submit"
+              loading={isSubmitting}>
+              Enviar
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    </Card>
+  );
+};
 
 export default LoginForm;

@@ -6,6 +6,7 @@ const initialState = {
   currentPageNumber: 0,
   currentPage: {},
   loadedPages: [],
+  totalItems: 0,
   totalPages: 0,
   activeSuggestion: {}
 };
@@ -17,6 +18,7 @@ const loadFirstPageSuccess = (state, { payload }) => {
     pages: state.pages.concat(page),
     currentPageNumber: 1,
     currentPage: page,
+    totalItems: payload.results_count,
     loadedPages: state.loadedPages.concat(1),
     totalPages: Math.ceil(payload.results_count / PAGE_ITEM_COUNT)
   };
@@ -35,6 +37,7 @@ const loadNextPageSuccess = (state, { payload }) => {
     totalPages,
     currentPage,
     currentPageNumber,
+    totalItems: payload.results_count,
     pages: state.pages.concat(currentPage),
     loadedPages: state.loadedPages.concat(payload.number).sort((a, b) => a > b)
   };
@@ -43,8 +46,7 @@ const loadNextPageSuccess = (state, { payload }) => {
 const setPageNumber = (state, { payload }) => {
   return {
     ...state,
-    currentPageNumber: payload,
-    currentPage: state.pages.find(page => page.number === payload)
+    currentPageNumber: payload
   };
 };
 
