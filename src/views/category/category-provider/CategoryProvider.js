@@ -1,50 +1,64 @@
-import { Component } from 'react';
-import { connect } from 'react-redux';
-
+import { useState, useEffect } from 'react';
 import { http, getAuthHeaders } from '../../../utils';
-import { fetchCategoriesSuccess } from '../../../state/category/actions';
 
-class CategoryProvider extends Component {
-  state = {
-    loading: false,
-    error: false
-  };
+const CategoryProvider = ({ render, user }) => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-  async componentDidMount() {
+  const getCategories = async () => {
     try {
-      this.setState({ loading: true, error: false });
+      setLoading(true);
+      setError(false);
       const { data } = await http.get('/category', {
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(user.token)
       });
-      this.props.getCategories(data);
-      this.setState({ loading: false });
+      setCategories(data);
     } catch (error) {
-      this.setState({ loading: false, error: true });
-    }
-  }
-
-  render() {
-    const { categories } = this.props;
-    const { loading, error } = this.state;
-    return this.props.children(categories, loading, error);
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    categories: state.category.categories
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    getCategories: categories => {
-      dispatch(fetchCategoriesSuccess(categories));
+      console.error(error);
+      setError(true);
+    } finally {
+      setLoading(false);
     }
   };
-};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CategoryProvider);
+  const editCategory = async (id, props) => {
+    try {
+      const { data: category } = await http.patch(`/category/${id}`, props, {
+        headers: getAuthHeaders(user.token)
+      });
+      const newCategories = categories.map(c => {
+        if (c._id === category._id) {
+          return { ...c, ...category };
+        }
+        return c;
+      });
+      return setCategories(newCategories);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const deleteCategory = async id => {
+    try {
+      await http.delete(`/category/${id}`, {
+        headers: getAuthHeaders(user.token)
+      });
+      const newCategories = categories.filter(c => {
+        return c._id !== id;
+      });
+      return setCategories(newCategories);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  return render({ categories, loading, error, editCategory, deleteCategory });
+};
+export default CategoryProvider;

@@ -1,11 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
 import { Button, Modal, message } from 'antd';
 import PropTypes from 'prop-types';
-
-import { http, getAuthHeaders } from '../../../utils';
 import CategoryForm from '../category-form/CategoryForm';
-import { editCategorySuccess } from '../../../state/category/actions';
 
 class EditCategoryButton extends Component {
   state = { error: false, modalIsOpen: false };
@@ -17,13 +13,8 @@ class EditCategoryButton extends Component {
     setSubmitting(true);
     this.setState({ error: false }, async () => {
       try {
-        await http.put(
-          `/category/${this.props.category._id}`,
-          { title: name },
-          { headers: getAuthHeaders() }
-        );
+        await this.props.editCategory(this.props.category._id, { name });
         message.success('Cambios guardados');
-        this.props.editSuccess(this.props.category._id, name);
         this.setState({ modalIsOpen: false });
       } catch (error) {
         this.setState({ error: true });
@@ -52,7 +43,7 @@ class EditCategoryButton extends Component {
           onCancel={() => this.setModalState(false)}
           footer={null}>
           <CategoryForm
-            initialValues={{ name: category.title }}
+            initialValues={{ name: category.name }}
             buttonText="Guardar"
             onSubmit={this.submitHandler}
           />
@@ -62,18 +53,7 @@ class EditCategoryButton extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    editSuccess: (id, name) => {
-      dispatch(editCategorySuccess(id, name));
-    }
-  };
-};
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(EditCategoryButton);
+export default EditCategoryButton;
 
 EditCategoryButton.propTypes = {
   category: PropTypes.object.isRequired

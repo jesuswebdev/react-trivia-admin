@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { GUEST_ADMIN_TOKEN, API_URL } from '../config';
 
 export const getAuthState = () => {
   let user = JSON.parse(localStorage.getItem('userData'));
@@ -15,19 +16,17 @@ export const getAuthState = () => {
   };
 };
 
-export const getAuthHeaders = () => {
-  let user = JSON.parse(localStorage.getItem('userData'));
-  const { token } = user || {};
-  if (!token) {
-    return undefined;
-  }
+export const getAuthHeaders = token => {
   return {
-    Authorization: 'Bearer ' + token
+    Authorization: 'Bearer ' + token || GUEST_ADMIN_TOKEN
   };
 };
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL
+  baseURL: API_URL,
+  headers: {
+    Authorization: 'Bearer ' + GUEST_ADMIN_TOKEN
+  }
 });
 
 export { axiosInstance as http };

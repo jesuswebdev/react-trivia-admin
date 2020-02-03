@@ -9,12 +9,8 @@ const initialState = {
 
 const userLoginSuccess = (state, action) => {
   let data = action.payload;
-  localStorage.setItem('userData', JSON.stringify(data));
   return {
     ...state,
-    email: data.user.email,
-    id: data.user.id,
-    name: data.user.name,
     token: data.token
   };
 };

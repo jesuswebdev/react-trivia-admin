@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Row, Col, Modal, Card } from 'antd';
 import { http, getAuthHeaders } from '../../../utils';
 import CategoryForm from '../category-form/CategoryForm';
-import { createCategory } from '../../../state/category/actions';
 
 class NewCategory extends Component {
   state = {
@@ -23,12 +22,11 @@ class NewCategory extends Component {
     setSubmitting(true);
     this.setState({ error: false }, async () => {
       try {
-        const { data } = await http.post(
+        await http.post(
           '/category',
-          { title: name },
-          { headers: getAuthHeaders() }
+          { name },
+          { headers: getAuthHeaders(this.props.user.token) }
         );
-        this.props.saveCategory(data);
         setSubmitting(false);
         this.successModal();
       } catch ({ response: { data } = {} }) {
@@ -65,15 +63,4 @@ class NewCategory extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    saveCategory: data => {
-      dispatch(createCategory(data));
-    }
-  };
-};
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(NewCategory);
+export default connect(({ user }) => ({ user }))(NewCategory);

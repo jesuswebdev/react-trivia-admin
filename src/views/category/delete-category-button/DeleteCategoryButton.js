@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Button, message, Modal } from 'antd';
-
-import { getAuthHeaders, http } from '../../../utils';
-import { deleteCategory } from '../../../state/category/actions';
 
 class DeleteCategoryButton extends Component {
   handleDeleteModal = category => {
     Modal.confirm({
-      title: `¿Seguro que quieres eliminar la categoría: ${category.title}?`,
+      title: `¿Seguro que quieres eliminar la categoría: ${category.name}?`,
       okText: 'Confirmar',
       cancelText: 'Cancelar',
       onOk: () => this.deleteCategory(category._id)
@@ -19,10 +15,7 @@ class DeleteCategoryButton extends Component {
   deleteCategory = async id => {
     const deleteMessage = message.loading('Eliminando categoría...', 0);
     try {
-      await http.delete(`/category/${id}`, {
-        headers: getAuthHeaders()
-      });
-      this.props.deleteCategory(id);
+      await this.props.deleteCategory(id);
       deleteMessage();
       message.success('Categoría eliminada');
     } catch (error) {
@@ -42,18 +35,7 @@ class DeleteCategoryButton extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    deleteCategory: id => {
-      dispatch(deleteCategory(id));
-    }
-  };
-};
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(DeleteCategoryButton);
+export default DeleteCategoryButton;
 
 DeleteCategoryButton.propTypes = {
   category: PropTypes.object.isRequired

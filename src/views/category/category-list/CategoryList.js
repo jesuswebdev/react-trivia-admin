@@ -2,15 +2,20 @@ import React, { Fragment } from 'react';
 import { Spin, Row, Col, Table } from 'antd';
 import DeleteCategoryButton from '../delete-category-button/DeleteCategoryButton';
 import EditCategoryButton from '../edit-category-button/EditCategoryButton';
-import CategoryInfoButton from '../category-info-button/CategoryInfoButton';
 
 class CategoryList extends React.Component {
   render() {
-    const { categories, loading, error } = this.props;
+    const {
+      categories,
+      loading,
+      error,
+      editCategory,
+      deleteCategory
+    } = this.props;
     const columns = [
       {
         title: 'Nombre',
-        dataIndex: 'title'
+        dataIndex: 'name'
       },
       {
         title: 'Preguntas',
@@ -23,10 +28,12 @@ class CategoryList extends React.Component {
         align: 'center',
         render: (_, item) => (
           <Fragment>
-            <CategoryInfoButton category={item} />
-            <EditCategoryButton category={item} />
+            <EditCategoryButton category={item} editCategory={editCategory} />
             {item.question_count === 0 && (
-              <DeleteCategoryButton category={item} />
+              <DeleteCategoryButton
+                category={item}
+                deleteCategory={deleteCategory}
+              />
             )}
           </Fragment>
         )
