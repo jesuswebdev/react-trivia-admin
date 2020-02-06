@@ -1,15 +1,9 @@
 import React from 'react';
-import CategoryProvider from './category-provider/CategoryProvider';
+import { CategoryProvider } from '../../providers';
 import CategoryList from './category-list/CategoryList';
 
 const Category = () => {
-  return (
-    <CategoryProvider>
-      {(categories, loading, error) => (
-        <CategoryList categories={categories} loading={loading} error={error} />
-      )}
-    </CategoryProvider>
-  );
+  return <CategoryProvider render={props => <CategoryList {...props} />} />;
 };
 
 export default Category;

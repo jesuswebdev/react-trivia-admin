@@ -1,92 +1,180 @@
-import React, { Component, Fragment } from 'react';
-import { Table, Tag, Button } from 'antd';
-import Paginator from '../../../components/paginator/Paginator';
+import React, { Fragment, useState } from 'react';
+import { Table, Button, Typography, Descriptions, Select } from 'antd';
+const { Paragraph } = Typography;
+const { Option } = Select;
 
-class SuggestionsList extends Component {
-  shouldComponentUpdate(nextProps) {
-    if (nextProps.currentPage !== this.props.currentPage) {
-      return true;
-    }
-    if (nextProps.suggestions !== this.props.suggestions) {
-      return true;
-    }
-    if (nextProps.loading !== this.props.loading) {
-      return true;
-    }
-
-    return false;
-  }
-
-  render() {
-    const { props } = this;
-
-    const difficulty = {
-      easy: { text: 'Fácil', color: 'green' },
-      medium: { text: 'Media', color: 'gold' },
-      hard: { text: 'Difícil', color: 'red' }
-    };
-
-    const columns = [
-      { title: 'Pregunta', dataIndex: 'title' },
-      {
-        title: 'Categoría',
-        dataIndex: 'category.title',
-        align: 'center',
-        render: text => <Tag color="#108ee9">{text}</Tag>
-      },
-      {
-        title: 'Dificultad',
-        dataIndex: 'difficulty',
-        render: text => (
-          <Tag color={difficulty[text].color}>{difficulty[text].text}</Tag>
-        )
-      },
-      {
-        title: 'Acciones',
-        key: 'actions',
-        render: (_, item) => (
-          <Fragment>
-            <Button shape="circle" icon="info" style={{ margin: '0px 4px' }} />
-            <Button
-              shape="circle"
-              icon="check"
-              style={{ margin: '0px 4px' }}
-              onClick={() =>
-                props.setSuggestionState(item._id, 'approve', props.currentPage)
-              }
-            />
-            <Button
-              shape="circle"
-              icon="delete"
-              style={{ margin: '0px 4px' }}
-              onClick={() =>
-                props.setSuggestionState(item._id, 'reject', props.currentPage)
-              }
-            />
-          </Fragment>
-        )
+const SuggestionsList = props => {
+  const [editState, setEditState] = useState({});
+  const columns = [
+    {
+      title: 'Pregunta',
+      key: 'question',
+      render: (_, item) => {
+        const {
+          text: correctAnswer,
+          option_id: correctAnswerId
+        } = item.options.find(({ correct }) => correct);
+        return (
+          <>
+            <Descriptions bordered size="small" layout="vertical">
+              <Descriptions.Item label="Título">
+                <Paragraph
+                  editable={{
+                    onChange: async title => {
+                      await props.editQuestion(item._id, { title });
+                    }
+                  }}>
+                  {item.title}
+                </Paragraph>
+              </Descriptions.Item>
+              <Descriptions.Item label="Categoría">
+                {editState[`${item._id}-category`] ? (
+                  <Select
+                    style={{ width: '100%' }}
+                    defaultValue={item.category._id}
+                    onChange={async category => {
+                      await props.editQuestion(item._id, {
+                        category
+                      });
+                      setEditState({
+                        ...editState,
+                        [`${item._id}-category`]: undefined
+                      });
+                    }}>
+                    {props.categories.map(c => (
+                      <Option
+                        key={`${item._id}-category-${c._id}`}
+                        value={c._id}>
+                        {c.name}
+                      </Option>
+                    ))}
+                  </Select>
+                ) : (
+                  <Paragraph
+                    onClick={() => {
+                      setEditState({
+                        ...editState,
+                        [`${item._id}-category`]: true
+                      });
+                    }}>
+                    {item.category.name}
+                  </Paragraph>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Respuesta Correcta">
+                {editState[`${item._id}-correct`] ? (
+                  <Select
+                    style={{ width: '100%' }}
+                    defaultValue={correctAnswerId}
+                    onChange={async value => {
+                      const newOptions = item.options.map(i => {
+                        return { ...i, correct: i.option_id === value };
+                      });
+                      await props.editQuestion(item._id, {
+                        options: newOptions
+                      });
+                      setEditState({
+                        ...editState,
+                        [`${item._id}-correct`]: undefined
+                      });
+                    }}>
+                    {item.options.map(opt => (
+                      <Option
+                        key={`${item._id}-correct-${opt.option_id}`}
+                        value={opt.option_id}>
+                        {opt.text}
+                      </Option>
+                    ))}
+                  </Select>
+                ) : (
+                  <Paragraph
+                    onClick={() => {
+                      setEditState({
+                        ...editState,
+                        [`${item._id}-correct`]: true
+                      });
+                    }}>
+                    {correctAnswer}
+                  </Paragraph>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Enlace">
+                <Paragraph
+                  editable={{
+                    onChange: async link => {
+                      await props.editQuestion(item._id, { link });
+                    }
+                  }}>
+                  {item.link}
+                </Paragraph>
+              </Descriptions.Item>
+              <Descriptions.Item label="Trivia">
+                <Paragraph
+                  editable={{
+                    onChange: async did_you_know => {
+                      await props.editQuestion(item._id, { did_you_know });
+                    }
+                  }}>
+                  {item.did_you_know}
+                </Paragraph>
+              </Descriptions.Item>
+              <Descriptions.Item label="Opciones">
+                {item.options.map(opt => (
+                  <Paragraph
+                    key={`${item._id}-${opt.option_id}`}
+                    editable={{
+                      onChange: async text => {
+                        const newOptions = item.options.map(i => {
+                          return i.option_id === opt.option_id
+                            ? {
+                                ...i,
+                                text
+                              }
+                            : i;
+                        });
+                        await props.editQuestion(item._id, {
+                          options: newOptions
+                        });
+                      }
+                    }}>
+                    {opt.text}
+                  </Paragraph>
+                ))}
+              </Descriptions.Item>
+            </Descriptions>
+          </>
+        );
       }
-    ];
-
-    const pagination = (
-      <Paginator
-        current={props.currentPage}
-        total={props.totalItems}
-        onClickNextPage={props.onClickNextPage}
-        style={{ textAlign: 'center' }}
-      />
-    );
-
-    return (
-      <Table
-        dataSource={props.suggestions}
-        columns={columns}
-        rowKey={item => item._id}
-        loading={props.loading}
-        pagination={pagination}
-      />
-    );
-  }
-}
+    },
+    {
+      title: 'Acciones',
+      key: 'actions',
+      render: (_, item) => (
+        <Fragment>
+          <Button
+            shape="circle"
+            icon="check"
+            style={{ margin: '0px 4px' }}
+            onClick={() => props.editQuestion(item._id, { state: 'approved' })}
+          />
+          <Button
+            shape="circle"
+            icon="delete"
+            style={{ margin: '0px 4px' }}
+            onClick={() => props.editQuestion(item._id, { state: 'rejected' })}
+          />
+        </Fragment>
+      )
+    }
+  ];
+  return (
+    <Table
+      dataSource={props.questions}
+      columns={columns}
+      rowKey={item => `${item._id}-${new Date(item.createdAt).getTime()}`}
+      loading={props.loading}
+    />
+  );
+};
 
 export default SuggestionsList;

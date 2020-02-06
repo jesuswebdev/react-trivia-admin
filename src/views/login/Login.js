@@ -34,7 +34,7 @@ class Login extends Component {
 
     return (
       <Row type="flex" justify="center">
-        <Col xs={22} sm={16} md={10} lg={10}>
+        <Col xs={22} sm={16} md={10} lg={8}>
           <LoginForm
             error={this.state.error}
             errorMessage={this.state.errorMessage}
