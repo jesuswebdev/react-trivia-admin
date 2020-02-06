@@ -1,15 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import CategoryProvider from './category-provider/CategoryProvider';
+import { CategoryProvider } from '../../providers';
 import CategoryList from './category-list/CategoryList';
 
-const Category = ({ user }) => {
-  return (
-    <CategoryProvider
-      user={user}
-      render={props => <CategoryList {...props} />}
-    />
-  );
+const Category = () => {
+  return <CategoryProvider render={props => <CategoryList {...props} />} />;
 };
 
-export default connect(({ user }) => ({ user }))(Category);
+export default Category;

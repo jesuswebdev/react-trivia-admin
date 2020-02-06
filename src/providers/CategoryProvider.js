@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { http, getAuthHeaders } from '../../../utils';
+import { http, getAuthHeaders } from '../utils';
+import { connect } from 'react-redux';
 
 const CategoryProvider = ({ render, user }) => {
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [loadingCategories, setLoading] = useState(false);
+  const [errorLoadingCategories, setError] = useState(false);
 
   const getCategories = async () => {
     try {
@@ -59,6 +60,12 @@ const CategoryProvider = ({ render, user }) => {
     getCategories();
   }, []);
 
-  return render({ categories, loading, error, editCategory, deleteCategory });
+  return render({
+    categories,
+    loadingCategories,
+    errorLoadingCategories,
+    editCategory,
+    deleteCategory
+  });
 };
-export default CategoryProvider;
+export default connect(({ user }) => ({ user }))(CategoryProvider);

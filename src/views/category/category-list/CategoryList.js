@@ -7,8 +7,8 @@ class CategoryList extends React.Component {
   render() {
     const {
       categories,
-      loading,
-      error,
+      loadingCategories,
+      errorLoadingCategories,
       editCategory,
       deleteCategory
     } = this.props;
@@ -39,10 +39,10 @@ class CategoryList extends React.Component {
         )
       }
     ];
-    if (error) {
+    if (errorLoadingCategories) {
       return <p>Ocurrió un error</p>;
     }
-    if (loading) {
+    if (loadingCategories) {
       return (
         <Spin
           style={{
